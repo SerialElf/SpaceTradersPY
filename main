@@ -5,7 +5,7 @@ from tkinter import ttk
 
 ##Variable Declares
 token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZGVudGlmaWVyIjoiU0VSSUFMRUxGXzAwMDQiLCJpYXQiOjE2ODM1NjQ2MDYsInN1YiI6ImFnZW50LXRva2VuIn0.jib9gY7sXj0JjFpPXv92Ss_rwBEhZXO7CWOy0Kwedcp0GjKS1nUCkU7fQbTNPT0SpfrEX4hKckUrxjtyYbWzn46l6VaEeByHVA6R04zJn8pTSOknyn610CT2aG06KPbSVKNl9GXIko3_LxhR37DqluzyZK6hXEFsf3KFRyNOcYuudQQOWHOU7yxUH_s9oE4pcK6LT4taJxpxihpCK-l0ReRhYG6sR3BiazQ2EoZogfaim5eVG2b6GdTgRBc4hijkC7ihbs77OBjb46eGH03u7AnG6DDxKhVhYszGqJET8slyBnQz8E0GeQiioG-ax4mht6pqm8X086gcFllS9pPNpa3z9ImOhFkof-jpShI6fD4cDu0eS0YJrzKSLcqw5NiO9PdROsraIwhQq7jjQEFXM3M5030lxHeLbbImCg4RKH5x_dqftAbDwhkK4HTBUUV21bUMxewwU-jgKAoJWra3pWEgCIl1sHAe1usKlcJbNzZo04esU5E1uM0MYnaxHePL"
-agent = "SerialElf_0004"
+active_agent = "SerialElf_0004"
 own_faction ="DOMINION"
 headers = {
     'Authorization': f"Bearer {token}"
@@ -14,16 +14,23 @@ headers = {
 ##init window (I think)
 main = Tk(screenName="Space Traders")
 main.geometry('600x400')
+main.title("Space Traders")
 
 json_data = {
 }
 ##contracts data pull
 def contracts_check():
     response = requests.get('https://api.spacetraders.io/v2/my/contracts/', headers=headers)
-    print(response.status_code)
+    print("Pull Contract Data\nStatus:", response.status_code)
+
     contracts = Tk(screenName="Contracts")
     contracts.geometry('600x400')
+    contracts.title("Contracts")
 
+    box1 = ttk.Label(contracts, text="Contracts Data")
+    box1.pack()
+
+    ##text dump field for contract data
     contract_data = Text(contracts, width=350, height= 500)
     contract_data.insert(END, response.text)
     contract_data.pack()
@@ -31,10 +38,20 @@ def contracts_check():
 ##agent data pull
 def agent_info():
     response = requests.get('https://api.spacetraders.io/v2/my/agent', headers=headers)
-    print("Code:",response.status_code)
-    print(response.text)
-    agent_data = ttk.Label(text=response.text)
+    print("Pull Agent Info\nStatus:",response.status_code)
+
+    agent = Tk(screenName="Agent")
+    agent.geometry('600x400')
+    agent.title("Agent")
+
+    box1 = ttk.Label(agent, text="Agent Data")
+    box1.pack()
+
+    agent_data = Text(agent, height=500, width = 350)
+    agent_data.insert(END, response.text)
     agent_data.pack()
+
+    agent.mainloop()
 ##button logic
 check_contracts = ttk.Button(main, text="Check Contracts", command = contracts_check)
 check_agent = ttk.Button(main, text="Agent Info", command = agent_info)
