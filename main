@@ -1,6 +1,7 @@
 ## Imports
 import requests 
-import tkinter as tk
+from tkinter import *
+from tkinter import ttk
 
 ##Variable Declares
 token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZGVudGlmaWVyIjoiU0VSSUFMRUxGXzAwMDQiLCJpYXQiOjE2ODM1NjQ2MDYsInN1YiI6ImFnZW50LXRva2VuIn0.jib9gY7sXj0JjFpPXv92Ss_rwBEhZXO7CWOy0Kwedcp0GjKS1nUCkU7fQbTNPT0SpfrEX4hKckUrxjtyYbWzn46l6VaEeByHVA6R04zJn8pTSOknyn610CT2aG06KPbSVKNl9GXIko3_LxhR37DqluzyZK6hXEFsf3KFRyNOcYuudQQOWHOU7yxUH_s9oE4pcK6LT4taJxpxihpCK-l0ReRhYG6sR3BiazQ2EoZogfaim5eVG2b6GdTgRBc4hijkC7ihbs77OBjb46eGH03u7AnG6DDxKhVhYszGqJET8slyBnQz8E0GeQiioG-ax4mht6pqm8X086gcFllS9pPNpa3z9ImOhFkof-jpShI6fD4cDu0eS0YJrzKSLcqw5NiO9PdROsraIwhQq7jjQEFXM3M5030lxHeLbbImCg4RKH5x_dqftAbDwhkK4HTBUUV21bUMxewwU-jgKAoJWra3pWEgCIl1sHAe1usKlcJbNzZo04esU5E1uM0MYnaxHePL"
@@ -11,18 +12,34 @@ headers = {
 }
 
 ##init window (I think)
-window = tk.Tk(screenName="Space Traders")
+main = Tk(screenName="Space Traders")
+main.geometry('600x400')
 
 json_data = {
 }
 ##contracts data pull
-def conracts_check():
-    item_1 = requests.get('https://api.spacetraders.io/v2/my/contracts/', headers=headers)
-    print("Code:",item_1.status_code,"\n",item_1.text)
+def contracts_check():
+    response = requests.get('https://api.spacetraders.io/v2/my/contracts/', headers=headers)
+    print(response.status_code)
+    contracts = Tk(screenName="Contracts")
+    contracts.geometry('600x400')
+
+    contract_data = Text(contracts, width=350, height= 500)
+    contract_data.insert(END, response.text)
+    contract_data.pack()
+    contracts.mainloop()
 ##agent data pull
 def agent_info():
     response = requests.get('https://api.spacetraders.io/v2/my/agent', headers=headers)
     print("Code:",response.status_code)
     print(response.text)
-    agent_data = tk.Label(text=response.text)
+    agent_data = ttk.Label(text=response.text)
     agent_data.pack()
+##button logic
+check_contracts = ttk.Button(main, text="Check Contracts", command = contracts_check)
+check_agent = ttk.Button(main, text="Agent Info", command = agent_info)
+## pack the buttons
+check_agent.pack()
+check_contracts.pack()
+
+main.mainloop()
