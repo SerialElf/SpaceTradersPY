@@ -18,7 +18,7 @@ main.geometry('600x400')
 main.title("Space Traders")
 display = Text(main, width=550, height=20)
 display.pack(side='bottom')
-label=ttk.Label(main)
+label=Label(main)
 label.pack(side='bottom')
 ##container for button row
 top = Frame(main)
@@ -67,8 +67,8 @@ def agent_pull():
     return "Agent Data",data
 
 ##button logic
-check_fleet = ttk.Button(main, text="Check Fleet", command = fleet_pull)
-check_agent = ttk.Button(main, text="Check Agent", command = agent_pull)
+check_fleet = Button(main, text="Check Fleet", command = fleet_pull)
+check_agent = Button(main, text="Check Agent", command = agent_pull)
 ## pack the buttons
 check_fleet.pack(in_=top, side=LEFT)
 check_agent.pack(in_=top, side=LEFT)
