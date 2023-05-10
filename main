@@ -20,6 +20,9 @@ display = Text(main, width=550, height=20)
 display.pack(side='bottom')
 label=ttk.Label(main)
 label.pack(side='bottom')
+##container for button row
+top = Frame(main)
+top.pack(side=TOP)
 
 ##fleet data pull
 def fleet_pull():
@@ -67,7 +70,7 @@ def agent_pull():
 check_fleet = ttk.Button(main, text="Check Fleet", command = fleet_pull)
 check_agent = ttk.Button(main, text="Check Agent", command = agent_pull)
 ## pack the buttons
-check_fleet.pack()
-check_agent.pack()
+check_fleet.pack(in_=top, side=LEFT)
+check_agent.pack(in_=top, side=LEFT)
 
 main.mainloop()
