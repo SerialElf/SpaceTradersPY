@@ -24,7 +24,7 @@ label.pack(side='bottom')
 ##container for button row
 top = Frame(main)
 top.pack(side=TOP)
-agent_field = Text(top, width=20, height=1)
+agent_field = Text(top, width=15, height=1)
 agent_field.pack(side=RIGHT)
 agent_field.insert(END, active_agent)
 
@@ -74,6 +74,8 @@ def agent_pull():
     iterate_main_text(agent,"NULL")
     
     return "Agent Data",agent
+def agent_register():
+    return "fuck you"
 
 def system_pull():
     update_token()
