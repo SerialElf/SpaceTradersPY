@@ -25,8 +25,9 @@ top = Frame(main)
 top.pack(side=TOP)
 
 def iterate_main_text(a,b):
+    display.delete("1.0","end")
+    
     for x,y in a.items():
-        display.delete("1.0","end")
 
         ##For some reason these all have to be seperate, fuck me as to why
         display.insert(END, x)
