@@ -7,8 +7,8 @@ from elfsecret import agents
 
 ##grab the tokens
 ##Variable Declares
-active_agent = "SerialElf_0019"
-token = agents.get('SerialElf_0019')
+active_agent = "SerialElf_0018"
+token = agents.get('SerialElf_0018')
 
 headers = {
     'Authorization': f"Bearer {token}"
@@ -110,14 +110,23 @@ def agent_register():
             'faction': 'DOMINION',
         }
         response = requests.post('https://api.spacetraders.io/v2/register', headers=headers, json=json_data)
+        print(response.status_code)
         data = json.loads(response.text)
+        #if response.status_code == "200": ##201 is successful registration
         agentdata = data['data']
         temptoken = agentdata['token']
         agents[field]=temptoken
         iterate_main_text(agents)
         secret = open('elfsecret.py', 'w')
+        new_secret="agents = ",str(agents)
         secret.write(str(agents))
         print(data,type(data))
+        #elif response.status_code == "422":
+            #error = response.status_code,"\nThis entry already exists and is not in our records\n a unique symbol is required"
+            #post_main_text(error)
+        #else:
+            #error = response.status_code,"\nan error was encountered"
+            #post_main_text(error)
     else:
         post_main_text("Agent already exists in our database")
 def system_pull():
