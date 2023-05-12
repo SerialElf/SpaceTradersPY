@@ -26,12 +26,13 @@ top.pack(side=TOP)
 
 def iterate_main_text(a,b):
     for x,y in a.items():
+        display.delete("1.0","end")
+
         ##For some reason these all have to be seperate, fuck me as to why
         display.insert(END, x)
         display.insert(END, " : ")
         display.insert(END, y)
         display.insert(END, "\n")
-
 
 ##fleet data pull
 def fleet_pull():
@@ -47,7 +48,6 @@ def fleet_pull():
     print(type(ships))
 
     ##shove the data into the box
-    display.delete("1.0","end")
     iterate_main_text(ships,meta)
     
     return "Fleet Data",data
@@ -60,7 +60,6 @@ def agent_pull():
     data = json.loads(response.text)
     agent = data['data']
     print(data)
-    display.delete("1.0","end")
     iterate_main_text(agent,"NULL")
     
     return "Agent Data",data
@@ -74,7 +73,6 @@ def system_pull():
     meta = data['meta']
 
     print(systems)
-    display.delete("1.0","end")
     iterate_main_text(systems,meta)
 
 ##button logic
