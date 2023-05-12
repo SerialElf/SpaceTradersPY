@@ -8,7 +8,7 @@ from elfsecret import agents
 ##Variable Declares
 token = agents.get('SerialElf_0004')
 active_agent = "SerialElf_0004" ##should this be ENV too?
-own_faction = "DOMINION" ##Probs, OOH maybe make a tokens.dict with a symbol:token schema? ##TODO 5/12/2023
+own_faction = "DOMINION"
 headers = {
     'Authorization': f"Bearer {token}"
 }
@@ -24,7 +24,13 @@ label.pack(side='bottom')
 ##container for button row
 top = Frame(main)
 top.pack(side=TOP)
+agent_field = Text(top, width=20, height=1)
+agent_field.pack(side=RIGHT)
+agent_field.insert(END, active_agent)
 
+def update_token():
+    active_agent = agent_field.get("1.0",'end-1c')
+    token = agents.get(active_agent)
 def iterate_main_text(a,b):
     display.delete("1.0","end")
 
@@ -39,6 +45,7 @@ def iterate_main_text(a,b):
 
 ##fleet data pull
 def fleet_pull():
+    update_token()
     label.config(text="Fleet Data")
     ##grab the json
     response = requests.get('https://api.spacetraders.io/v2/my/ships/', headers=headers)
@@ -56,6 +63,7 @@ def fleet_pull():
     return "Fleet Data",ships,meta ##future proofing, doesn't do anything rn 5/12/2023
 
 def agent_pull():
+    update_token()
     label.config(text="Agent Data")
     response = requests.get('https://api.spacetraders.io/v2/my/agent', headers=headers)
     print("Pull Agent Data\nStatus:", response.status_code)
@@ -68,6 +76,7 @@ def agent_pull():
     return "Agent Data",agent
 
 def system_pull():
+    update_token()
     response = requests.get('https://api.spacetraders.io/v2/systems', headers=headers)
     print("Pull System Data\nStatus:", response.status_code)
 
@@ -80,9 +89,9 @@ def system_pull():
     return "System List",systems,meta
 
 ##button logic
-check_fleet = Button(main, text="Check Fleet", command = fleet_pull)
-check_agent = Button(main, text="Check Agent", command = agent_pull)
-check_systems = Button(main, text="Check Systems", command = system_pull)
+check_fleet = Button(top, text="Check Fleet", command = fleet_pull)
+check_agent = Button(top, text="Check Agent", command = agent_pull)
+check_systems = Button(top, text="Check Systems", command = system_pull)
 ## pack the buttons
 check_fleet.pack(in_=top, side=LEFT)
 check_agent.pack(in_=top, side=LEFT)
