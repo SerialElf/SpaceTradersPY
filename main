@@ -24,6 +24,15 @@ label.pack(side='bottom')
 top = Frame(main)
 top.pack(side=TOP)
 
+def iterate_main_text(a,b):
+    for x,y in a.items():
+        ##For some reason these all have to be seperate, fuck me as to why
+        display.insert(END, x)
+        display.insert(END, " : ")
+        display.insert(END, y)
+        display.insert(END, "\n")
+
+
 ##fleet data pull
 def fleet_pull():
     label.config(text="Fleet Data")
@@ -40,20 +49,21 @@ def fleet_pull():
 
     ##shove the data into the box
     display.delete("1.0","end")
-    for x,y in ships.items():
+    iterate_main_text(ships,meta)
+    #for x,y in ships.items():
         ##For some reason these all have to be seperate, fuck me as to why
-        display.insert(END, x)
-        display.insert(END, " : ")
-        display.insert(END, y)
-        display.insert(END, "\n\n")
+    #    display.insert(END, x)
+    #    display.insert(END, " : ")
+    #    display.insert(END, y)
+    #    display.insert(END, "\n")
     
     return "Fleet Data",data
 
 def agent_pull():
     label.config(text="Agent Data")
     response = requests.get('https://api.spacetraders.io/v2/my/agent', headers=headers)
-
     print("Pull Agent Data\nStatus:", response.status_code)
+
     data = json.loads(response.text)
     agent = data['data']
     print(data)
@@ -62,15 +72,33 @@ def agent_pull():
         display.insert(END, x)
         display.insert(END, " : ")
         display.insert(END, y)
-        display.insert(END, "\n\n")
+        display.insert(END, "\n")
     
     return "Agent Data",data
+
+def system_pull():
+    response = requests.get('https://api.spacetraders.io/v2/systems', headers=headers)
+    print("Pull System Data\nStatus:", response.status_code)
+
+    data = json.loads(response.text)
+    systems = data['data'][0]
+    meta = data['meta']
+
+    print(systems)
+    display.delete("1.0","end")
+    for x,y in systems.items():
+        display.insert(END, x)
+        display.insert(END, " : ")
+        display.insert(END, y)
+        display.insert(END, "\n")
 
 ##button logic
 check_fleet = Button(main, text="Check Fleet", command = fleet_pull)
 check_agent = Button(main, text="Check Agent", command = agent_pull)
+check_systems = Button(main, text="Check Systems", command = system_pull)
 ## pack the buttons
 check_fleet.pack(in_=top, side=LEFT)
 check_agent.pack(in_=top, side=LEFT)
+check_systems.pack(in_=top, side=LEFT)
 
 main.mainloop()
