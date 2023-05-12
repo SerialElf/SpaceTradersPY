@@ -1,14 +1,14 @@
 ## Imports
 import requests
 import json
+import traceback
 from tkinter import *
 from elfsecret import agents
 
 ##grab the tokens
 ##Variable Declares
 token = agents.get('SerialElf_0004')
-active_agent = "SerialElf_0004" ##should this be ENV too?
-own_faction = "DOMINION"
+active_agent = "SerialElf_0004"
 headers = {
     'Authorization': f"Bearer {token}"
 }
@@ -28,9 +28,24 @@ agent_field = Text(top, width=15, height=1)
 agent_field.pack(side=RIGHT)
 agent_field.insert(END, active_agent)
 
+def key_check(dic, key):
+    if key in dic.keys():
+        print("key found")
+        return TRUE
+    else:
+        print("key not found")
+        return FALSE
+
 def update_token():
-    active_agent = agent_field.get("1.0",'end-1c')
-    token = agents.get(active_agent)
+    field = agent_field.get("1.0",'end-1c') ##-1c stops it from adding a newline
+    present = key_check(agents, field)
+    if present == TRUE:
+        active_agent = field 
+        token = agents.get(active_agent) ##why doesn't this throw an exception whenthe agent isn't in the secrets?
+        return "0"
+    else:
+        return "1"
+
 def iterate_main_text(a,b):
     display.delete("1.0","end")
 
@@ -45,7 +60,7 @@ def iterate_main_text(a,b):
 
 ##fleet data pull
 def fleet_pull():
-    update_token()
+    success = update_token()
     label.config(text="Fleet Data")
     ##grab the json
     response = requests.get('https://api.spacetraders.io/v2/my/ships/', headers=headers)
