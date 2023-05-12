@@ -42,9 +42,9 @@ def update_token():
     if present == TRUE:
         active_agent = field 
         token = agents.get(active_agent) ##why doesn't this throw an exception whenthe agent isn't in the secrets?
-        return "0"
+        return TRUE
     else:
-        return "1"
+        return "No such agent found, please check your entry or register that symbol"
 
 def iterate_main_text(a,b):
     display.delete("1.0","end")
@@ -57,7 +57,9 @@ def iterate_main_text(a,b):
         display.insert(END, " : ")
         display.insert(END, y)
         display.insert(END, "\n")
-
+def post_main_text(a):
+    display.delete("1.0","end")
+    display.insert(END, a)
 ##fleet data pull
 def fleet_pull():
     success = update_token()
@@ -73,12 +75,15 @@ def fleet_pull():
     print(type(ships))
 
     ##shove the data into the box
-    iterate_main_text(ships,meta)
+    if success == TRUE:
+        iterate_main_text(ships,meta)
+    else:
+        post_main_text(success)
     
     return "Fleet Data",ships,meta ##future proofing, doesn't do anything rn 5/12/2023
 
 def agent_pull():
-    update_token()
+    success = update_token()
     label.config(text="Agent Data")
     response = requests.get('https://api.spacetraders.io/v2/my/agent', headers=headers)
     print("Pull Agent Data\nStatus:", response.status_code)
@@ -86,23 +91,29 @@ def agent_pull():
     data = json.loads(response.text)
     agent = data['data']
     print(data)
-    iterate_main_text(agent,"NULL")
+    if success == TRUE:
+        iterate_main_text(agent,"NULL")
+    else:
+        post_main_text(success)
     
     return "Agent Data",agent
 def agent_register():
     return "fuck you"
 
 def system_pull():
-    update_token()
+    success = update_token()
     response = requests.get('https://api.spacetraders.io/v2/systems', headers=headers)
     print("Pull System Data\nStatus:", response.status_code)
 
     data = json.loads(response.text)
     systems = data['data'][0]
     meta = data['meta']
-
     print(systems)
-    iterate_main_text(systems,meta)
+    if success == TRUE:
+        iterate_main_text(systems,meta)
+    else:
+        post_main_text(success)
+
     return "System List",systems,meta
 
 ##button logic
