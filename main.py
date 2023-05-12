@@ -2,10 +2,11 @@
 import requests
 import json
 from tkinter import *
+from elfsecret import agents
 
+##grab the tokens
 ##Variable Declares
-##TODO move token to ENV and add to git ignore 5/12/2023
-token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZGVudGlmaWVyIjoiU0VSSUFMRUxGXzAwMDQiLCJpYXQiOjE2ODM1NjQ2MDYsInN1YiI6ImFnZW50LXRva2VuIn0.jib9gY7sXj0JjFpPXv92Ss_rwBEhZXO7CWOy0Kwedcp0GjKS1nUCkU7fQbTNPT0SpfrEX4hKckUrxjtyYbWzn46l6VaEeByHVA6R04zJn8pTSOknyn610CT2aG06KPbSVKNl9GXIko3_LxhR37DqluzyZK6hXEFsf3KFRyNOcYuudQQOWHOU7yxUH_s9oE4pcK6LT4taJxpxihpCK-l0ReRhYG6sR3BiazQ2EoZogfaim5eVG2b6GdTgRBc4hijkC7ihbs77OBjb46eGH03u7AnG6DDxKhVhYszGqJET8slyBnQz8E0GeQiioG-ax4mht6pqm8X086gcFllS9pPNpa3z9ImOhFkof-jpShI6fD4cDu0eS0YJrzKSLcqw5NiO9PdROsraIwhQq7jjQEFXM3M5030lxHeLbbImCg4RKH5x_dqftAbDwhkK4HTBUUV21bUMxewwU-jgKAoJWra3pWEgCIl1sHAe1usKlcJbNzZo04esU5E1uM0MYnaxHePL"
+token = agents.get('SerialElf_0004')
 active_agent = "SerialElf_0004" ##should this be ENV too?
 own_faction = "DOMINION" ##Probs, OOH maybe make a tokens.dict with a symbol:token schema? ##TODO 5/12/2023
 headers = {
