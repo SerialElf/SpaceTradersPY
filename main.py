@@ -7,8 +7,9 @@ from elfsecret import agents
 
 ##grab the tokens
 ##Variable Declares
-token = agents.get('SerialElf_0004')
-active_agent = "SerialElf_0004"
+active_agent = "SerialElf_0019"
+token = agents.get('SerialElf_0019')
+
 headers = {
     'Authorization': f"Bearer {token}"
 }
@@ -17,7 +18,7 @@ headers = {
 main = Tk(screenName="Space Traders")
 main.geometry('600x400')
 main.title("Space Traders")
-display = Text(main, width=550, height=20)
+display = Text(main, width=200, height=20)
 display.pack(side='bottom')
 label=Label(main)
 label.pack(side='bottom')
@@ -42,11 +43,11 @@ def update_token():
     if present == TRUE:
         active_agent = field 
         token = agents.get(active_agent) ##why doesn't this throw an exception whenthe agent isn't in the secrets?
-        return TRUE
+        return TRUE,TRUE
     else:
-        return "No such agent found, please check your entry or register that symbol"
+        return FALSE,"No such agent found, please check your entry or register that symbol"
 
-def iterate_main_text(a,b):
+def iterate_main_text(a):
     display.delete("1.0","end")
 
     #x is data, y is meta
@@ -62,7 +63,7 @@ def post_main_text(a):
     display.insert(END, a)
 ##fleet data pull
 def fleet_pull():
-    success = update_token()
+    success,stext = update_token()
     label.config(text="Fleet Data")
     ##grab the json
     response = requests.get('https://api.spacetraders.io/v2/my/ships/', headers=headers)
@@ -76,14 +77,14 @@ def fleet_pull():
 
     ##shove the data into the box
     if success == TRUE:
-        iterate_main_text(ships,meta)
+        iterate_main_text(ships)
     else:
-        post_main_text(success)
+        post_main_text(stext)
     
     return "Fleet Data",ships,meta ##future proofing, doesn't do anything rn 5/12/2023
 
 def agent_pull():
-    success = update_token()
+    success,stext = update_token()
     label.config(text="Agent Data")
     response = requests.get('https://api.spacetraders.io/v2/my/agent', headers=headers)
     print("Pull Agent Data\nStatus:", response.status_code)
@@ -92,16 +93,35 @@ def agent_pull():
     agent = data['data']
     print(data)
     if success == TRUE:
-        iterate_main_text(agent,"NULL")
+        iterate_main_text(agent)
     else:
-        post_main_text(success)
+        post_main_text(stext)
     
     return "Agent Data",agent
 def agent_register():
-    return "fuck you"
-
+    field = agent_field.get("1.0",'end-1c')
+    present = key_check(agents, field) ##really glad I defined this now
+    if present == FALSE: ##I just stole this from the APIs
+        headers = {
+            'Content-Type': 'application/json',
+        }
+        json_data = {
+            'symbol': field,
+            'faction': 'DOMINION',
+        }
+        response = requests.post('https://api.spacetraders.io/v2/register', headers=headers, json=json_data)
+        data = json.loads(response.text)
+        agentdata = data['data']
+        temptoken = agentdata['token']
+        agents[field]=temptoken
+        iterate_main_text(agents)
+        secret = open('elfsecret.py', 'w')
+        secret.write(str(agents))
+        print(data,type(data))
+    else:
+        post_main_text("Agent already exists in our database")
 def system_pull():
-    success = update_token()
+    success,stext = update_token()
     response = requests.get('https://api.spacetraders.io/v2/systems', headers=headers)
     print("Pull System Data\nStatus:", response.status_code)
 
@@ -110,9 +130,9 @@ def system_pull():
     meta = data['meta']
     print(systems)
     if success == TRUE:
-        iterate_main_text(systems,meta)
+        iterate_main_text(systems)
     else:
-        post_main_text(success)
+        post_main_text(stext)
 
     return "System List",systems,meta
 
@@ -120,9 +140,11 @@ def system_pull():
 check_fleet = Button(top, text="Check Fleet", command = fleet_pull)
 check_agent = Button(top, text="Check Agent", command = agent_pull)
 check_systems = Button(top, text="Check Systems", command = system_pull)
+register_agent = Button(top, text="Register Agent", command = agent_register)
 ## pack the buttons
-check_fleet.pack(in_=top, side=LEFT)
-check_agent.pack(in_=top, side=LEFT)
-check_systems.pack(in_=top, side=LEFT)
+check_fleet.pack(side=LEFT)
+check_agent.pack(side=LEFT)
+check_systems.pack(side=LEFT)
+register_agent.pack(side=LEFT)
 
 main.mainloop()
