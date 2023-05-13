@@ -25,4 +25,4 @@ replay_pid*
 
 #secrets
 elfsecret.py
-_pycache/*
+__pycache__/*
